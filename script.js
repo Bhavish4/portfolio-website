@@ -339,62 +339,61 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Contact Form Handling
-    const contactForm = document.querySelector('.contact-form');
-    const submitStatus = document.querySelector('.submit-status');
+    const form = document.getElementById('form');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const submitStatus = form.querySelector('.submit-status');
 
-    if (contactForm) {
-        contactForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+        submitStatus.style.display = "block";
+        submitStatus.textContent = "Sending message...";
+        submitStatus.className = "submit-status";
+        
+        let formData = new FormData(form);
+        
+        try {
+            const res = await fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams(formData)
+            });
             
-            const submitBtn = contactForm.querySelector('button[type="submit"]');
-            const originalBtnText = submitBtn.textContent;
-            const formInputs = contactForm.querySelectorAll('input:not([type="hidden"]), textarea');
+            const data = await res.json();
             
-            // Show sending state
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Sending...';
-            formInputs.forEach(input => input.disabled = true);
-            submitStatus.textContent = 'Sending message...';
-            submitStatus.className = 'submit-status';
-            submitStatus.style.display = 'block';
-
-            try {
-                const formData = new FormData(this);
+            if (data.success) {
+                submitStatus.textContent = "Message sent successfully!";
+                submitStatus.className = "submit-status success";
+                form.reset();
                 
-                const response = await fetch('https://api.web3forms.com/submit', {
-                    method: 'POST',
-                    body: formData
+                // Reset form fields to their initial state
+                const inputs = form.querySelectorAll('input, textarea');
+                inputs.forEach(input => {
+                    input.classList.remove('filled');
+                    const label = input.nextElementSibling;
+                    if (label && label.tagName === 'LABEL') {
+                        label.style.transform = 'none';
+                        label.style.top = '1rem';
+                    }
                 });
-
-                const data = await response.json();
-                console.log('Form submission response:', data); // For debugging
-
-                if (data.success) {
-                    // Success state
-                    submitStatus.textContent = 'Message sent successfully!';
-                    submitStatus.className = 'submit-status success';
-                    this.reset();
-                } else {
-                    // Error state
-                    throw new Error(data.message || 'Something went wrong!');
-                }
-            } catch (error) {
-                console.error('Form submission error:', error); // For debugging
-                submitStatus.textContent = error.message;
-                submitStatus.className = 'submit-status error';
             }
-
-            // Reset form state
-            submitBtn.disabled = false;
-            submitBtn.textContent = originalBtnText;
-            formInputs.forEach(input => input.disabled = false);
-
-            // Hide status after 3 seconds
-            setTimeout(() => {
-                submitStatus.style.display = 'none';
-            }, 3000);
-        });
-    }
+        } catch (error) {
+            console.error('Form submission error:', error);
+            // Don't show error message to user
+        }
+        
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send Message';
+        
+        setTimeout(() => {
+            submitStatus.style.display = "none";
+        }, 3000);
+    });
 });
 
 // Hero Section Animations with optimized timing

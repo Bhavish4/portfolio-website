@@ -529,68 +529,6 @@
                     <div class="submit-status"></div>
                     <button type="submit" class="submit-btn">Send Message</button>
                 </form>
-
-                <!-- Add this script right after your form -->
-                <script>
-                    const form = document.getElementById('form');
-                    const submitBtn = form.querySelector('button[type="submit"]');
-                    const submitStatus = form.querySelector('.submit-status');
-
-                    form.addEventListener('submit', async function(e) {
-                        e.preventDefault();
-                        
-                        submitBtn.disabled = true;
-                        submitBtn.textContent = 'Sending...';
-                        submitStatus.style.display = "block";
-                        submitStatus.textContent = "Sending message...";
-                        submitStatus.className = "submit-status";
-                        
-                        let formData = new FormData(form);
-                        
-                        try {
-                            const res = await fetch('https://api.web3forms.com/submit', {
-                                method: 'POST',
-                                headers: {
-                                    'Accept': 'application/json',
-                                    'Content-Type': 'application/x-www-form-urlencoded'
-                                },
-                                body: new URLSearchParams(formData)
-                            });
-                            
-                            const data = await res.json();
-                            
-                            if (data.success) {
-                                submitStatus.textContent = "Message sent successfully!";
-                                submitStatus.className = "submit-status success";
-                                form.reset();
-                                
-                                // Reset form fields to their initial state
-                                const inputs = form.querySelectorAll('input, textarea');
-                                inputs.forEach(input => {
-                                    input.classList.remove('filled');
-                                    const label = input.nextElementSibling;
-                                    if (label && label.tagName === 'LABEL') {
-                                        label.style.transform = 'none';
-                                        label.style.top = '1rem';
-                                    }
-                                });
-                            } else {
-                                throw new Error(data.message || 'Failed to send message');
-                            }
-                        } catch (error) {
-                            console.error('Form submission error:', error);
-                            submitStatus.textContent = "Failed to send message. Please try again.";
-                            submitStatus.className = "submit-status error";
-                        }
-                        
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = 'Send Message';
-                        
-                        setTimeout(() => {
-                            submitStatus.style.display = "none";
-                        }, 3000);
-                    });
-                </script>
             </div>
         </div>
     </section>
