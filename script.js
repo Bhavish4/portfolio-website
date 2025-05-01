@@ -352,7 +352,10 @@ document.addEventListener('DOMContentLoaded', () => {
         submitStatus.textContent = "Sending message...";
         submitStatus.className = "submit-status";
         
-        let formData = new FormData(form);
+        // Create form data with all required fields
+        const formData = new FormData(form);
+        formData.append('redirect', 'false'); // Prevent automatic redirect
+        formData.append('redirect_url', ''); // No redirect URL needed
         
         try {
             const res = await fetch('https://api.web3forms.com/submit', {
@@ -381,10 +384,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         label.style.top = '1rem';
                     }
                 });
+                
+                // Log success for debugging
+                console.log('Form submitted successfully:', data);
+            } else {
+                throw new Error(data.message || 'Failed to send message');
             }
         } catch (error) {
             console.error('Form submission error:', error);
-            // Don't show error message to user
+            submitStatus.textContent = "Failed to send message. Please try again.";
+            submitStatus.className = "submit-status error";
         }
         
         submitBtn.disabled = false;
