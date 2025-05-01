@@ -541,6 +541,9 @@
                         
                         submitBtn.disabled = true;
                         submitBtn.textContent = 'Sending...';
+                        submitStatus.style.display = "block";
+                        submitStatus.textContent = "Sending message...";
+                        submitStatus.className = "submit-status";
                         
                         let formData = new FormData(form);
                         
@@ -559,8 +562,18 @@
                             if (data.success) {
                                 submitStatus.textContent = "Message sent successfully!";
                                 submitStatus.className = "submit-status success";
-                                submitStatus.style.display = "block";
                                 form.reset();
+                                
+                                // Reset form fields to their initial state
+                                const inputs = form.querySelectorAll('input, textarea');
+                                inputs.forEach(input => {
+                                    input.classList.remove('filled');
+                                    const label = input.nextElementSibling;
+                                    if (label && label.tagName === 'LABEL') {
+                                        label.style.transform = 'none';
+                                        label.style.top = '1rem';
+                                    }
+                                });
                             } else {
                                 throw new Error(data.message || 'Failed to send message');
                             }
@@ -568,7 +581,6 @@
                             console.error('Form submission error:', error);
                             submitStatus.textContent = "Failed to send message. Please try again.";
                             submitStatus.className = "submit-status error";
-                            submitStatus.style.display = "block";
                         }
                         
                         submitBtn.disabled = false;
