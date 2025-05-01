@@ -221,7 +221,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const preloader = document.querySelector('.preloader');
     const gridContainer = document.querySelector('.grid-container');
     const navbar = document.querySelector('.navbar');
-    const contactForm = document.querySelector('.contact-form');
 
     // Throttled scroll handler for better performance
     let lastScrollY = window.scrollY;
@@ -292,60 +291,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Form submission handling
-    if (contactForm) {
-        contactForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            
-            // Disable form and show loading state
-            submitBtn.textContent = 'Sending...';
-            submitBtn.disabled = true;
-            contactForm.querySelectorAll('input, textarea').forEach(input => input.disabled = true);
-            
-            try {
-                // Get form data
-                const formData = new FormData(contactForm);
-                
-                // Validate form
-                if (!validateForm(formData)) {
-                    throw new Error('Please fill in all fields correctly');
-                }
-                
-                // Add CSRF token if available
-                const csrfToken = document.querySelector('meta[name="csrf-token"]');
-                if (csrfToken) {
-                    formData.append('csrf_token', csrfToken.content);
-                }
-                
-                // Simulate form submission (replace with actual API call)
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                
-                // Show success message
-                submitBtn.textContent = 'Message Sent!';
-                contactForm.reset();
-                
-                // Re-enable form after delay
-                setTimeout(() => {
-                    submitBtn.textContent = originalText;
-                    submitBtn.disabled = false;
-                    contactForm.querySelectorAll('input, textarea').forEach(input => input.disabled = false);
-                }, 3000);
-            } catch (error) {
-                console.error('Form submission error:', error);
-                submitBtn.textContent = error.message || 'Error! Please try again';
-                
-                // Re-enable form after delay
-                setTimeout(() => {
-                    submitBtn.textContent = originalText;
-                    submitBtn.disabled = false;
-                    contactForm.querySelectorAll('input, textarea').forEach(input => input.disabled = false);
-                }, 3000);
-            }
-        });
-    }
-
     // Initialize animations only when needed
     const initializeAnimations = () => {
         try {
@@ -392,6 +337,64 @@ document.addEventListener('DOMContentLoaded', () => {
             cancelAnimationFrame(rafId);
         }
     };
+
+    // Contact Form Handling
+    const contactForm = document.querySelector('.contact-form');
+    const submitStatus = document.querySelector('.submit-status');
+
+    if (contactForm) {
+        contactForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+            const formInputs = contactForm.querySelectorAll('input:not([type="hidden"]), textarea');
+            
+            // Show sending state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            formInputs.forEach(input => input.disabled = true);
+            submitStatus.textContent = 'Sending message...';
+            submitStatus.className = 'submit-status';
+            submitStatus.style.display = 'block';
+
+            try {
+                const formData = new FormData(this);
+                
+                const response = await fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                console.log('Form submission response:', data); // For debugging
+
+                if (data.success) {
+                    // Success state
+                    submitStatus.textContent = 'Message sent successfully!';
+                    submitStatus.className = 'submit-status success';
+                    this.reset();
+                } else {
+                    // Error state
+                    throw new Error(data.message || 'Something went wrong!');
+                }
+            } catch (error) {
+                console.error('Form submission error:', error); // For debugging
+                submitStatus.textContent = error.message;
+                submitStatus.className = 'submit-status error';
+            }
+
+            // Reset form state
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+            formInputs.forEach(input => input.disabled = false);
+
+            // Hide status after 3 seconds
+            setTimeout(() => {
+                submitStatus.style.display = 'none';
+            }, 3000);
+        });
+    }
 });
 
 // Hero Section Animations with optimized timing
@@ -544,19 +547,6 @@ function initializeFormAnimations() {
     } catch (error) {
         console.error('Error in form animations:', error);
     }
-}
-
-// Form validation
-function validateForm(formData) {
-    const email = formData.get('email');
-    const message = formData.get('message');
-    
-    if (!email || !message) {
-        return false;
-    }
-    
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
 }
 
 // Hide preloader on window load

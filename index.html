@@ -510,21 +510,70 @@
                         <a href="https://github.com/Bhavish4" target="_blank">github.com/Bhavish4</a>
                     </div>
                 </div>
-                <form class="contact-form">
+                <form id="form" class="contact-form">
+                    <input type="hidden" name="access_key" value="5f0582ee-335e-46b9-8550-daac9ff4ca02">
+                    <input type="hidden" name="from_name" value="Portfolio Contact Form">
+                    <input type="hidden" name="subject" value="Portfolio Contact Form">
                     <div class="form-group">
-                        <input type="text" id="name" required>
+                        <input type="text" id="name" name="name" required placeholder=" ">
                         <label for="name">Name</label>
                     </div>
                     <div class="form-group">
-                        <input type="email" id="email" required>
+                        <input type="email" id="email" name="email" required placeholder=" ">
                         <label for="email">Email</label>
                     </div>
                     <div class="form-group">
-                        <textarea id="message" required></textarea>
+                        <textarea id="message" name="message" required placeholder=" " rows="5"></textarea>
                         <label for="message">Message</label>
                     </div>
+                    <div class="submit-status"></div>
                     <button type="submit" class="submit-btn">Send Message</button>
                 </form>
+
+                <!-- Add this script right after your form -->
+                <script>
+                    const form = document.getElementById('form');
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    const submitStatus = form.querySelector('.submit-status');
+
+                    form.addEventListener('submit', async function(e) {
+                        e.preventDefault();
+                        
+                        submitBtn.disabled = true;
+                        submitBtn.textContent = 'Sending...';
+                        
+                        let formData = new FormData(form);
+                        
+                        try {
+                            const res = await fetch('https://api.web3forms.com/submit', {
+                                method: 'POST',
+                                body: formData
+                            });
+                            
+                            const data = await res.json();
+                            
+                            if (data.success) {
+                                submitStatus.textContent = "Message sent successfully!";
+                                submitStatus.className = "submit-status success";
+                                submitStatus.style.display = "block";
+                                form.reset();
+                            } else {
+                                throw new Error(data.message);
+                            }
+                        } catch (error) {
+                            submitStatus.textContent = "Failed to send message. Please try again.";
+                            submitStatus.className = "submit-status error";
+                            submitStatus.style.display = "block";
+                        }
+                        
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Send Message';
+                        
+                        setTimeout(() => {
+                            submitStatus.style.display = "none";
+                        }, 3000);
+                    });
+                </script>
             </div>
         </div>
     </section>
