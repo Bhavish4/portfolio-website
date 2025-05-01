@@ -547,7 +547,11 @@
                         try {
                             const res = await fetch('https://api.web3forms.com/submit', {
                                 method: 'POST',
-                                body: formData
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/x-www-form-urlencoded'
+                                },
+                                body: new URLSearchParams(formData)
                             });
                             
                             const data = await res.json();
@@ -558,9 +562,10 @@
                                 submitStatus.style.display = "block";
                                 form.reset();
                             } else {
-                                throw new Error(data.message);
+                                throw new Error(data.message || 'Failed to send message');
                             }
                         } catch (error) {
+                            console.error('Form submission error:', error);
                             submitStatus.textContent = "Failed to send message. Please try again.";
                             submitStatus.className = "submit-status error";
                             submitStatus.style.display = "block";
