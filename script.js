@@ -352,24 +352,34 @@ document.addEventListener('DOMContentLoaded', () => {
         submitStatus.textContent = "Sending message...";
         submitStatus.className = "submit-status";
         
-        // Create form data with all required fields
-        const formData = new FormData(form);
-        formData.append('redirect', 'false'); // Prevent automatic redirect
-        formData.append('redirect_url', ''); // No redirect URL needed
-        
         try {
-            const res = await fetch('https://api.web3forms.com/submit', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: new URLSearchParams(formData)
+            // Get form data
+            const formData = new FormData(form);
+            const object = {};
+            formData.forEach((value, key) => {
+                object[key] = value;
             });
             
-            const data = await res.json();
+            // Add additional required fields
+            object.redirect = false;
+            object.redirect_url = '';
             
-            if (data.success) {
+            // Log the data being sent
+            console.log('Submitting form data:', object);
+            
+            const response = await fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(object)
+            });
+            
+            const result = await response.json();
+            console.log('Form submission response:', result);
+            
+            if (result.success) {
                 submitStatus.textContent = "Message sent successfully!";
                 submitStatus.className = "submit-status success";
                 form.reset();
@@ -384,11 +394,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         label.style.top = '1rem';
                     }
                 });
-                
-                // Log success for debugging
-                console.log('Form submitted successfully:', data);
             } else {
-                throw new Error(data.message || 'Failed to send message');
+                throw new Error(result.message || 'Failed to send message');
             }
         } catch (error) {
             console.error('Form submission error:', error);
