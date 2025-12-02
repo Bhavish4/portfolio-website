@@ -458,6 +458,28 @@ section {
     margin-bottom: 1rem;
 }
 
+.skill-category {
+    margin-bottom: 3rem;
+}
+
+.skill-category:last-child {
+    margin-bottom: 0;
+}
+
+.skill-category-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary-color);
+    opacity: 0.8;
+}
+
+[data-theme="dark"] .skill-category-title {
+    opacity: 1;
+}
+
 /* Contact Section */
 .contact-content {
     display: grid;
@@ -1066,6 +1088,16 @@ section {
         color: #2563eb;
         font-weight: 600;
         letter-spacing: 0.5px;
+    }
+
+    .skill-category {
+        margin-bottom: 2rem;
+    }
+
+    .skill-category-title {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
     }
 
     .certifications-grid {
