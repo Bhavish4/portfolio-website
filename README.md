@@ -1,6 +1,6 @@
 # Portfolio Website
 
-A modern, responsive portfolio website showcasing my skills, projects, and experience as a Full Stack Developer & Cybersecurity Enthusiast.
+A modern, responsive portfolio website showcasing my skills, projects, and experience as a Full Stack Developer & Cybersecurity Enthusiast with enhanced interactive features and smooth animations.
 
 ## 🌐 Live Demo
 
@@ -8,8 +8,9 @@ A modern, responsive portfolio website showcasing my skills, projects, and exper
 
 ## ✨ Features
 
+### Core Features
 - **Responsive Design**: Fully responsive layout that works seamlessly on all devices (desktop, tablet, mobile)
-- **Dark Mode Toggle**: User-friendly dark/light theme switcher with persistent preference
+- **Dark Mode Toggle**: User-friendly dark/light theme switcher with persistent preference storage
 - **Interactive Animations**: Smooth animations and transitions using Anime.js
 - **Particle Background**: Dynamic particle.js background for visual appeal
 - **SEO Optimized**: Comprehensive SEO with structured data (JSON-LD), Open Graph, and Twitter Card tags
@@ -17,6 +18,13 @@ A modern, responsive portfolio website showcasing my skills, projects, and exper
 - **Contact Form**: Functional contact form integrated with Web3Forms
 - **Accessibility**: ARIA labels, skip links, and semantic HTML for better accessibility
 - **Security Headers**: X-Content-Type-Options, X-Frame-Options, and other security meta tags
+
+### Enhanced Features
+- **Typing Animation**: Dynamic hero section text that cycles through multiple professional titles
+- **Active Navigation**: Automatically highlights the current section as you scroll
+- **Skill Proficiency Bars**: Animated progress bars showing expertise levels for each skill
+- **Keyboard Shortcuts**: Quick navigation with keyboard shortcuts ('t' for theme toggle, Home/End for scrolling)
+- **Smooth Scrolling**: Enhanced scroll-to-top functionality with animations
 
 ## 🛠️ Technologies Used
 
@@ -41,9 +49,9 @@ A modern, responsive portfolio website showcasing my skills, projects, and exper
 ```
 portfolio-website/
 │
-├── index.html          # Main HTML file
-├── styles.css          # All CSS styles
-├── script.js           # JavaScript functionality
+├── index.html          # Main HTML file with all sections
+├── styles.css          # All CSS styles with theme support
+├── script.js           # JavaScript functionality and animations
 ├── particles-config.json # Particles.js configuration
 │
 ├── portfolio.png       # Portfolio project image
@@ -85,18 +93,42 @@ No prerequisites needed! This is a static website that runs directly in a browse
 
 ## 📋 Sections
 
-1. **Hero Section**: Introduction with call-to-action buttons
+1. **Hero Section**: Introduction with animated typing effect cycling through:
+   - Full Stack Developer
+   - Cybersecurity Enthusiast
+   - Problem Solver
+   - BCA Student
+   - Web Developer
+
 2. **About Me**: Personal background and interests
+
 3. **Education**: Academic qualifications and specializations
-4. **Certifications**: Professional certifications and achievements
+   - Ajeenkya DY Patil University (BCA)
+   - Kendriya Vidyalaya NAD Karanja (Higher Secondary)
+
+4. **Certifications**: Professional certifications including:
+   - Power BI
+   - Database Systems
+   - Cybersecurity
+   - Ethical Hacking
+   - Python
+   - SQL
+
 5. **Experience**: Work experience and internships
-6. **Projects**: Showcase of personal projects with links
-7. **Skills**: Technical skills organized by category
-   - Frontend (HTML5, CSS3, JavaScript, React, Bootstrap, Tailwind CSS)
-   - Backend (Node.js, Express.js, Python, Django, PHP)
-   - Database (MySQL, Firebase)
-   - Mobile Development (Flutter, Kotlin)
-   - Tools & Others (Git, GitHub, Figma, Jest, Ethical Hacking)
+   - Web Development Intern at Unified Mentor
+   - Treasurer at National Service Scheme
+
+6. **Projects**: Showcase of personal projects with GitHub links
+   - Personal Portfolio Website
+   - Student Management System
+
+7. **Skills**: Technical skills organized by category with proficiency indicators:
+   - **Frontend**: HTML5, CSS3, JavaScript, React, Bootstrap, Tailwind CSS
+   - **Backend**: Node.js, Express.js, Python, Django, PHP
+   - **Database**: MySQL, Firebase, MongoDB
+   - **Mobile Development**: Flutter, Kotlin
+   - **Tools & Others**: Git, GitHub, Figma, Jest, Ethical Hacking
+
 8. **Contact**: Contact form and social media links
 
 ## 🎨 Customization
@@ -123,6 +155,24 @@ Update the Web3Forms access key in `index.html`:
 <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY">
 ```
 
+### Typing Animation
+Customize the phrases in `script.js`:
+```javascript
+const phrases = [
+    'Your Title 1',
+    'Your Title 2',
+    'Your Title 3'
+];
+```
+
+### Skill Proficiency Levels
+Update proficiency percentages in `index.html`:
+```html
+<div class="skill-card" data-proficiency="90">
+    <!-- skill content -->
+</div>
+```
+
 ## 🔒 Security Features
 
 - **X-Content-Type-Options**: Prevents MIME-type sniffing
@@ -147,6 +197,7 @@ Update the Web3Forms access key in `index.html`:
 - **Preconnect**: External domains preconnected
 - **Optimized Images**: Proper sizing and format
 - **Minimal Dependencies**: Lightweight and fast
+- **Throttled Scroll Handlers**: Optimized performance with requestAnimationFrame
 
 ## 📊 SEO Features
 
@@ -157,6 +208,12 @@ Update the Web3Forms access key in `index.html`:
 - Descriptive meta descriptions
 - Canonical URL
 - Alt text for all images
+
+## ⌨️ Keyboard Shortcuts
+
+- **t**: Toggle dark/light theme
+- **Home**: Scroll to top
+- **End**: Scroll to bottom
 
 ## 🤝 Contributing
 
@@ -183,18 +240,16 @@ This project is open source and available under the [MIT License](LICENSE).
 - [Icons8](https://icons8.com/) - Skill icons
 - [Web3Forms](https://web3forms.com/) - Contact form service
 
-## 📈 Future Enhancements
+## 📈 Recent Updates
 
-- [ ] Add blog section
-- [ ] Implement blog functionality
-- [ ] Add more interactive animations
-- [ ] Add testimonials section
-- [ ] Add GitHub contribution graph
-- [ ] Add resume download feature
-- [ ] Add project filtering by technology
-- [ ] Add analytics integration
+- ✅ Added typing animation to hero section
+- ✅ Implemented active navigation highlighting
+- ✅ Added skill proficiency bars with animations
+- ✅ Enhanced keyboard navigation
+- ✅ Improved form validation
+- ✅ Optimized scroll performance
+- ✅ Removed unused features for cleaner UI
 
 ---
 
 ⭐ If you like this project, give it a star on GitHub!
-

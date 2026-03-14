@@ -240,7 +240,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Navbar shadow on scroll
                 navbar.classList.toggle('scrolled', lastScrollY > 50);
                 
-                ticking = false;
+                // Active navigation highlighting
+                highlightActiveNavigation();
+                
+                ticking = true;
             });
             ticking = true;
         }
@@ -367,20 +370,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 const data = await response.json();
-                console.log('Form submission response:', data); // For debugging
+                console.log('Form submission response:', data);
 
                 if (data.success) {
-                    // Success state
-                    submitStatus.textContent = 'Message sent successfully!';
+                    submitStatus.textContent = '✓ Message sent successfully!';
                     submitStatus.className = 'submit-status success';
                     this.reset();
                 } else {
-                    // Error state
                     throw new Error(data.message || 'Something went wrong!');
                 }
             } catch (error) {
-                console.error('Form submission error:', error); // For debugging
-                submitStatus.textContent = error.message;
+                console.error('Form submission error:', error);
+                submitStatus.textContent = '✗ ' + error.message;
                 submitStatus.className = 'submit-status error';
             }
 
@@ -436,8 +437,81 @@ const heroElements = {
     opacity: [0, 1],
                 duration: 600
             }, '-=400');
+            
+        // Initialize typing animation
+        initializeTypingAnimation();
     } catch (error) {
         console.error('Error in hero animations:', error);
+    }
+}
+
+// Typing Animation
+function initializeTypingAnimation() {
+    try {
+        const typingText = document.querySelector('.typing-text');
+        if (!typingText) return;
+        
+        const phrases = [
+            'Full Stack Developer',
+            'Cybersecurity Enthusiast',
+            'Problem Solver',
+            'BCA Student',
+            'Web Developer'
+        ];
+        
+        let phraseIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        let typingSpeed = 100;
+        
+        function type() {
+            const currentPhrase = phrases[phraseIndex];
+            
+            if (isDeleting) {
+                typingText.textContent = currentPhrase.substring(0, charIndex - 1);
+                charIndex--;
+                typingSpeed = 50;
+            } else {
+                typingText.textContent = currentPhrase.substring(0, charIndex + 1);
+                charIndex++;
+                typingSpeed = 100;
+            }
+            
+            if (!isDeleting && charIndex === currentPhrase.length) {
+                typingSpeed = 2000;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                typingSpeed = 500;
+            }
+            
+            setTimeout(type, typingSpeed);
+        }
+        
+        setTimeout(type, 1000);
+    } catch (error) {
+        console.error('Error in typing animation:', error);
+    }
+}
+
+// Skill Proficiency Animation
+function animateProficiencyBars() {
+    try {
+        const skillCards = document.querySelectorAll('.skill-card[data-proficiency]');
+        
+        skillCards.forEach(card => {
+            const proficiency = parseInt(card.getAttribute('data-proficiency'));
+            const proficiencyFill = card.querySelector('.proficiency-fill');
+            
+            if (proficiencyFill) {
+                setTimeout(() => {
+                    proficiencyFill.style.width = `${proficiency}%`;
+                }, 300);
+            }
+        });
+    } catch (error) {
+        console.error('Error animating proficiency bars:', error);
     }
 }
 
@@ -479,14 +553,17 @@ const sectionObserver = new IntersectionObserver((entries) => {
             }
 
             if (section.id === 'skills') {
-                    anime({
-                            targets: '.skill-card',
-                        translateY: [20, 0],
-                        opacity: [0, 1],
-                            duration: 500,
-                            delay: anime.stagger(50),
-                        easing: 'easeOutExpo'
+                anime({
+                    targets: '.skill-card',
+                    translateY: [20, 0],
+                    opacity: [0, 1],
+                    duration: 500,
+                    delay: anime.stagger(50),
+                    easing: 'easeOutExpo'
                 });
+                
+                // Animate proficiency bars
+                animateProficiencyBars();
             }
 
                     // Unobserve after animation
@@ -556,4 +633,65 @@ window.addEventListener('load', function() {
     preloader.classList.add('hide');
     setTimeout(() => preloader.style.display = 'none', 600);
   }
+});
+
+// Active Navigation Highlighting
+function highlightActiveNavigation() {
+    try {
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-links a');
+        
+        let currentSection = '';
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+            
+            if (window.scrollY >= (sectionTop - 100)) {
+                currentSection = section.getAttribute('id');
+            }
+        });
+        
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${currentSection}`) {
+                link.classList.add('active');
+            }
+        });
+    } catch (error) {
+        console.error('Error in navigation highlighting:', error);
+    }
+}
+
+// Keyboard Navigation
+document.addEventListener('keydown', (e) => {
+    // 't' key for theme toggle
+    if (e.key === 't' && !e.ctrlKey && !e.altKey && !e.metaKey) {
+        const themeToggle = document.querySelector('.theme-toggle');
+        if (themeToggle) {
+            themeToggle.click();
+        }
+    }
+    
+    // 'Home' key to scroll to top
+    if (e.key === 'Home' && !e.ctrlKey) {
+        e.preventDefault();
+        anime({
+            targets: document.documentElement,
+            scrollTop: 0,
+            duration: 800,
+            easing: 'easeInOutQuad'
+        });
+    }
+    
+    // 'End' key to scroll to bottom
+    if (e.key === 'End' && !e.ctrlKey) {
+        e.preventDefault();
+        anime({
+            targets: document.documentElement,
+            scrollTop: document.documentElement.scrollHeight,
+            duration: 800,
+            easing: 'easeInOutQuad'
+        });
+    }
 }); 
